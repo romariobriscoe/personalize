@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crafted Around You</title>
+<style>
+  :root {
+    --brand-blue: #1f6fdb;
+    --brand-blue-hover: #1a5cb8;
+    --ink: #0e1116;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .btn {
+    display: inline-block;
+    border: none;
+    padding: 14px 32px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    text-decoration: none;
+  }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+  .btn--primary {
+    background: var(--brand-blue);
+    color: #fff;
+  }
+  .btn--primary:hover { background: var(--brand-blue-hover); }
+
+  .personalize {
+    position: relative;
+    width: 100%;
+    min-height: 560px;
+    background-image: url("aircraft.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 56px 24px 64px;
+    text-align: center;
+  }
+
+  /* subtle darkening so light text reads cleanly */
+  .personalize::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.10) 35%, rgba(0,0,0,0.45) 100%);
+    z-index: 0;
+  }
+
+  .personalize__eyebrow {
+    position: relative;
+    z-index: 2;
+    font-size: 13px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 500;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+  }
+
+  .personalize__watermark {
+    position: absolute;
+    top: 50%;
+    left: 96px;   /* 1 inch inset from the left  */
+    right: 96px;  /* 1 inch inset from the right */
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.24);
+    font-weight: 300;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+    text-align: center;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.25);
+    line-height: 1;
+    /* JS sizes the font to exactly fill this width */
+  }
+  .personalize__watermark span {
+    display: inline-block;
+    white-space: nowrap;
+    letter-spacing: 0.18em;
+    font-size: 120px; /* starting size — JS will shrink to fit */
+  }
+
+  @media (max-width: 720px) {
+    .personalize__watermark { left: 24px; right: 24px; }
+  }
+
+  .personalize__cta {
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (max-width: 720px) {
+    .personalize { min-height: 460px; padding: 40px 16px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="personalize">
+  <div class="personalize__eyebrow">Crafted Around You</div>
+  <div class="personalize__watermark"><span id="watermarkText">PERSONALIZE</span></div>
+  <div class="personalize__cta">
+    <a href="#" class="btn btn--primary">Configure Your Aircraft</a>
+  </div>
+</section>
+
+<script>
+  // Size the watermark text so it exactly fills the available width
+  // (2-inch insets on each side). Caps at 160px so it never grows too large.
+  (function () {
+    const el = document.getElementById('watermarkText');
+    const wrapper = el.parentElement;
+    const MAX_FONT = 160;
+    const MIN_FONT = 24;
+
+    function fit() {
+      const available = wrapper.clientWidth;
+      if (available <= 0) return;
+      // Start large, measure, scale font-size linearly to fit.
+      el.style.fontSize = MAX_FONT + 'px';
+      const measured = el.scrollWidth;
+      let target = (available / measured) * MAX_FONT;
+      target = Math.max(MIN_FONT, Math.min(MAX_FONT, target));
+      el.style.fontSize = target + 'px';
+    }
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('DOMContentLoaded', fit);
+    fit();
+  })();
+</script>
+
+</body>
+</html>
